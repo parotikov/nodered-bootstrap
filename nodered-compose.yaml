@@ -1,0 +1,37 @@
+version: "3"
+services:
+  nodered:
+    container_name: nodered
+    image: nodered/node-red-docker
+    links:
+      - mongo
+      - mosquito
+    ports:
+      - 1880:1880/tcp
+      - 1885:1885/tcp
+    user: node-red
+    volumes:
+      - /home/nodered/node-red-data:/data
+  mosquito:
+    container_name: mosquito
+    image: toke/mosquitto
+    ports:
+      - 1883:1883/tcp
+      - 9001:9001/tcp
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - 27017:27017/tcp
+    volumes:
+      - /home/nodered/mongo-data:/data/db
+  mongoadmin:
+    container_name: mongo-express
+    image: mongo-express
+    ports:
+      - 43210:8081/tcp
+    links:
+      - mongo
+    environment:
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin
